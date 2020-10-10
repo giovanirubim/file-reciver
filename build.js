@@ -29,7 +29,7 @@ const app = fs.readFileSync('app.js').toString('utf8')
 if (!fs.existsSync('./building')) {
 	fs.mkdirSync('./building')
 }
-fs.writeFileSync('./building/app.js', app)
-child_process.execSync('cd building && pkg app.js -t node12-win-x64', {
+fs.writeFileSync('./building/receive.js', app)
+child_process.execSync('cd building && pkg receive.js -t node12-win-x64', {
 	stdio: 'inherit'
 })
