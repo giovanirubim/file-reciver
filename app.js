@@ -2,7 +2,7 @@ const http = require('http')
 const fs = require('fs')
 const os = require('os')
 
-const port = 80
+const port = Math.floor(Math.random()*10000 + 9000)
 
 const newKey = (n = 6) => {
 	let code = ''
@@ -117,19 +117,27 @@ const receiveFile = (req, res) => {
 	})
 }
 
+/*<target-1>*/
+const exists = (path) => {
+	if (path.includes('..')) return false
+	return fs.existsSync(`./web/${path}`)
+}
+const readFile = (path, callback) => {
+	fs.readFile(`./web/${path}`, callback)
+}
+/*<target-2>*/
+
 const loadFile = (req, res) => {
 	let path = req.url
-	if (path === '/') {
-		path += 'index.html'
+		.replace(/^(.*)(\?[^#]*)?(#.*)?$/, '$1')
+		.replace(/^\//, '') || 'index.html'
+	if (!path) {
+		path = 'index.html'
 	}
-	path = './web' + path
-	if (path.includes('..')) {
-		return res.send(400)
-	}
-	if (!fs.existsSync(path)) {
+	if (!exists(path)) {
 		return res.send(404)
 	}
-	fs.readFile(path, (err, buf) => {
+	readFile(path, (err, buf) => {
 		if (err) {
 			res.send(500)
 		} else {
@@ -194,5 +202,9 @@ const app = http.createServer((req, res) => {
 		console.error(err)
 	}
 })
+
+if (!fs.existsSync('./files')) {
+	fs.mkdirSync('./files')
+}
 
 app.listen(port, showLinks)
