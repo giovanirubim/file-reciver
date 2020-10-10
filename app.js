@@ -24,7 +24,7 @@ class Transfer {
 		this.written = 0
 		this.next_id = 1
 		this.last_access = new Date()
-		this.stream = fs.createWriteStream(`./files/${name}`)
+		this.stream = fs.createWriteStream(`./${name}`)
 		transfers.map[key] = this
 		transfers.array.push(this)
 		this.waiting = {}
@@ -202,9 +202,5 @@ const app = http.createServer((req, res) => {
 		console.error(err)
 	}
 })
-
-if (!fs.existsSync('./files')) {
-	fs.mkdirSync('./files')
-}
 
 app.listen(port, showLinks)
